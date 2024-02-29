@@ -12,6 +12,35 @@ const asyncHandler = () => {
 
 export { asyncHandler }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // const asyncHandler = ()=>{}
 //higher order function
 // const asyncHandler = (fn) => async (req, res, next) => {

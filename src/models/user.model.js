@@ -109,7 +109,7 @@ userSchema.methods.generateRefreashToken = function () {
         // expiry always goes in an object
         process.env.REFREASH_TOKEN_SECRET,
         {
-            expiresIn: process.env.REFREASH_TOKEN_EXPIRY
+            expiresIn: process.env.REFREASH_TOKEN_EXPIRY    
         }
 
     )
