@@ -56,13 +56,16 @@ const userSchema = new Schema({
 }, { timestamps: true, })
 
 
+// the next that we are using here is a A function that acts as a control flow mechanism within Express.js middleware. it indicates where to go or which
+// function to trigger next 
+
+
 // a hook from mongoose to do something before saving user data
 userSchema.pre("save", async function (next) {
     // this if statement checks that whether the password is
     // changed or not and salting or bycryption will only be done when password
     // is modified
     if (!this.isModified("password")) return next();
-
     this.password = bcrypt.hash(this.password, 10)
     next()
 
@@ -96,7 +99,7 @@ userSchema.methods.generateAccesstoken = function () {
 }
 
 userSchema.methods.generateRefreashToken = function () {
-    
+
 
     return jwt.sign(
         //name of the key in the payload: the data or value coming from database
@@ -109,7 +112,7 @@ userSchema.methods.generateRefreashToken = function () {
         // expiry always goes in an object
         process.env.REFREASH_TOKEN_SECRET,
         {
-            expiresIn: process.env.REFREASH_TOKEN_EXPIRY    
+            expiresIn: process.env.REFREASH_TOKEN_EXPIRY
         }
 
     )

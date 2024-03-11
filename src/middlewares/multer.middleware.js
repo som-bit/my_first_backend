@@ -2,13 +2,9 @@
 
 import multer from "multer";
 
-
-
 // the code you provided is configuring a storage engine for file uploads using multer,
 //a middleware for handling multipart / form - data.In this case,
 //the storage engine is specified as diskStorage, which means that files will be saved to the server's disk.
-
-
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {

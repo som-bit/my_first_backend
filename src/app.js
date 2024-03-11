@@ -10,10 +10,8 @@ const app = express()
 //CORS CROSS - ORIGIN ACCESS is a package that is used for security purpose 
 // to define from what sources we will accept request, what sord of headers will we accept 
 app.use(cors({
-
     origin: process.env.CORS_ORIGIN,
     credentials: true,
-
 }))
 
 // this middleware is for limiting the size of json
@@ -27,4 +25,15 @@ app.use(express.static("public"))
 
 //to perform basic crud with cookies eg saving secure cookies in user browser
 app.use(cookieParser())
+
+// segration of files
+// routs
+import userRouter from "./routes/user.routs.js"
+
+
+//routs decleration
+app.use("/api/v1/users", userRouter)
+
+
+
 export { app }
