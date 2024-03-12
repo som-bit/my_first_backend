@@ -1,6 +1,10 @@
 import { asyncHandler } from "../utils/async_handler.js"
 import { ApiError } from "../utils/api_error.js"
 import { User } from "../models/user.model.js"
+import { uploadOnCloudinary } from "../utils/cloudinary.js"
+import { ApiResponse } from "../utils/api_response.js"
+
+
 
 const registerUser = asyncHandler(async (req, res) => {
     // take user data from backend
@@ -16,7 +20,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
     // 1.take data from frontend
     const { fullname, email, password, username } = req.body
-    console.log("email:", email, password, fullname, username)
+
     //2. vlaidate data if presend or not
     if (
         // A function that accepts up to three arguments. The some method calls the predicate function for each element
@@ -41,12 +45,56 @@ const registerUser = asyncHandler(async (req, res) => {
     console.log(req.files);
 
 
+    //4. check for images and avatars
+    // multer gives us access of files
+    // after the user have hit submit  multer have already taken the file and save it in our 
+    // server and now we can access the file path
+    // check multer middleware for code
+    // console.log(req.files?.avatar[0]?.path)
+    const avatarLocalPath = req.files?.avatar[0]?.path;
+    // const coverImageLocalPath = req.files?.coverImage[0]?.path;
+    if (!avatarLocalPath) {
+        throw new ApiError(400, "Avatar image is required")
+    }   
+
+    let coverImageLocalPath;
+    if (req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0) {
+        coverImageLocalPath = req.files?.coverImage[0]?.path    
+    }
 
 
-    res.status(200).json({
+    //5. upload to cloudinary
+    // await here untill the image is upoaded on cloudinary
+    // and store a referance
+    const avatar = await uploadOnCloudinary(avatarLocalPath);
+    const coverImage = await uploadOnCloudinary(coverImageLocalPath);
 
-        message: "user is registered"
+    //6. check upload success on cloudinary
+    if (!avatar) {
+        throw new ApiError(409, "avatar not updated to cloudinary")
+    }
+    // 7. now its time to create an user object in our database
+    const user = await User.create({
+        fullname,
+        email,
+        avatar: avatar.url,
+        coverImage: coverImage?.url || "",
+        password,
+        username: username.toLowerCase()
     })
+    //8. sending response according to need after user is created
+    const createdUser = await User.findById(user._id).select(
+        "-password -refreashtoken"
+    )
+    if (!createdUser) {
+        throw new ApiError(500, "something went wrong while registering user")
+    }
+
+    return res.status(201).json(
+        new ApiResponse(200, createdUser, "User Register Successfully")
+    )
+
+
 })
 
 export { registerUser }

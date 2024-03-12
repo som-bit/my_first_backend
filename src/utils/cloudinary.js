@@ -3,7 +3,7 @@
 // step 3- now when the file is successfully uploaded in cloudinary we will remove the file from our server because this is not needed
 
 
-// LINKING andd UNLINKING whenever a file is deleted  it is unlinked from the rest  of the files (BAsic OS)
+// LINKING andd UNLINKING whenever a file is deleted  it is unlinked from the rest  of the files (Basic OS)
 
 
 
@@ -33,8 +33,8 @@ const uploadOnCloudinary = async (localFilePath) => {
             resource_type: "auto",
         })
         // upload suucess
-        console.log("file is upload in cloudinary")
-        console.log(response.url)
+        // on successfull upload the files should get removed from public/temp
+        fs.unlinkSync(localFilePath)
         return response;
 
     } catch (error) {
@@ -49,11 +49,9 @@ const uploadOnCloudinary = async (localFilePath) => {
 
 }
 
-
-
-cloudinary.uploader.upload("https://upload.wikimedia.org/wikipedia/commons/a/ae/Olympic_flag.jpg",
-    { public_id: "olympic_flag" },
-    function (error, result) { console.log(result); });
+// cloudinary.uploader.upload("https://upload.wikimedia.org/wikipedia/commons/a/ae/Olympic_flag.jpg",
+//     { public_id: "olympic_flag" },
+//     function (error, result) { console.log(result); });
 
 
 

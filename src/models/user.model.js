@@ -66,7 +66,7 @@ userSchema.pre("save", async function (next) {
     // changed or not and salting or bycryption will only be done when password
     // is modified
     if (!this.isModified("password")) return next();
-    this.password = bcrypt.hash(this.password, 10)
+    this.password = await bcrypt.hash(this.password, 10)
     next()
 
 })
